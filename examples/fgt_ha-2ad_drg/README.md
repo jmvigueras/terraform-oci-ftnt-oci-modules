@@ -1,5 +1,4 @@
 # Forigate cluster deployment
-## Introduction
 
 This deployment will create a Fortigate Cluster Active/Passive in two Availability Domains (AD1 and AD2) and with 3 ports (Management-HA, Public and Private). (It is possible to deploy sharing mangement port and HA sync port since version 7.0.2)
 
@@ -7,17 +6,13 @@ This deployment will create a Fortigate Cluster Active/Passive in two Availabili
 
 - New VCN with necessary regional subnets: Management (MGMT), Public and Private.
 - New VCN spoke with one regional subnet for new test instance.
-- New D
+- New Dynamic Routing Gateway (DRG)
 - Fortigate cluster: 2 instances with 3 interfaces in active-passive cluster FGCP.
 - HA failover is handeled by Fortigate SDN connector, which will update public IP asignations and necessary route tables
 
-## Diagram overview
-
-![FortiGate reference architecture overview](images/image1.png)
-
 ## Requirements
 * [Terraform](https://learn.hashicorp.com/terraform/getting-started/install.html) >= 1.0.0
-* Check particulars requiriments for each deployment (Azure) 
+* Check particulars requiriments for each deployment (OCI) 
 
 ## Deployment
 * Clone the repository.
@@ -28,7 +23,4 @@ This deployment will create a Fortigate Cluster Active/Passive in two Availabili
 
 # Support
 This a personal repository with goal of testing and demo Fortinet solutions on the Cloud. No support is provided and must be used by your own responsability. Cloud Providers will charge for this deployments, please take it in count before proceed.
-
-## License
-[License](./LICENSE)
 

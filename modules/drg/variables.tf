@@ -1,7 +1,9 @@
-variable "compartment_ocid" {}
+variable "compartment_ocid" {
+  description = "OCI compartment ID"
+}
 
-# Resources prefix description
 variable "prefix" {
+  description = "Resources prefix description"
   type    = string
   default = "terraform"
 }
@@ -15,16 +17,16 @@ variable "tags" {
 }
 
 variable "fgt_vcn_id" {
+  description = "Fortigate VCN ID"
   type = string
-  default = null
 }
 
 variable "fgt_subnet_ids" {
+  description = "Map of subnets IDss"
   type = map(string)
-  default = null
 }
 
 variable "fgt_vcn_rt_drg_id" {
+  description = "Fortigate VCN Route Table ID to create a route to new DRG ID"
   type = string
-  default = null
 }

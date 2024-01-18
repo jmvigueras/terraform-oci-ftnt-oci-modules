@@ -52,6 +52,6 @@ variable "drg_id" {
 }
 // DRG Route Table ID (pre-inspection)
 variable "drg_rt_id" {
-  type = string
+  type    = string
   default = null
 }

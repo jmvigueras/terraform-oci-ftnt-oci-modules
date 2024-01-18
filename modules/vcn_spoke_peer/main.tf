@@ -24,11 +24,11 @@ resource "oci_core_subnet" "subnet_vm" {
 }
 // Create LPG peered to FGT LPG
 resource "oci_core_local_peering_gateway" "lpg" {
-    compartment_id = var.compartment_ocid
-    display_name   = "${var.prefix}-spoke-to-fgt"
-    vcn_id         = oci_core_virtual_network.vcn.id
-    
-    peer_id = var.fgt_vcn_lpg_id
+  compartment_id = var.compartment_ocid
+  display_name   = "${var.prefix}-spoke-to-fgt"
+  vcn_id         = oci_core_virtual_network.vcn.id
+
+  peer_id = var.fgt_vcn_lpg_id
 }
 #----------------------------------------------------------------------------------------
 # Route Tables
@@ -88,7 +88,7 @@ resource "oci_core_security_list" "sl_vm" {
   compartment_id = var.compartment_ocid
   vcn_id         = oci_core_virtual_network.vcn.id
   display_name   = "${var.prefix}-sl-vm"
-  
+
   // Allow all traffic ingress
   ingress_security_rules {
     protocol = "all"

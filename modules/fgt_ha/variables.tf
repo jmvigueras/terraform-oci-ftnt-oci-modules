@@ -1,14 +1,17 @@
-variable "compartment_ocid" {}
-
-variable "tenancy_ocid" {
-  type    = string
-  default = ""
+variable "compartment_ocid" {
+  description = "OCI compartment ID"
 }
 
-# Resources prefix description
+variable "tenancy_ocid" {
+  description = "OCI Tenancy ID"
+  type        = string
+  default     = ""
+}
+
 variable "prefix" {
-  type    = string
-  default = "terraform"
+  description = "Resources prefix description"
+  type        = string
+  default     = "terraform"
 }
 
 variable "tags" {
@@ -20,46 +23,50 @@ variable "tags" {
 }
 
 variable "region" {
-  type    = string
-  default = "eu-frankfurt-1"
+  description = "OCI region to deploy fortigate instances"
+  type        = string
+  default     = "eu-frankfurt-1"
 }
 
 variable "region_ad_1" {
-  type    = string
-  default = "1"
+  description = "OCI region Availability Domain 1"
+  type        = string
+  default     = "1"
 }
 
 variable "region_ad_2" {
-  type    = string
-  default = "2"
+  description = "OCI region Availability Domain 2"
+  type        = string
+  default     = "2"
 }
 
 variable "fgt_passive" {
-  type    = bool
-  default = false
+  description = "Booolean to create Fortigate passive instance"
+  type        = bool
+  default     = false
 }
 
 variable "fgt_ha_fgsp" {
-  type    = bool
-  default = false
+  description = "Boolean to define Fortigate cluster as FGSP"
+  type        = bool
+  default     = false
 }
 
 variable "fgt_config_1" {
-  type    = string
-  default = ""
+  description = "Fotigate 1 bootstrap config"
+  type        = string
+  default     = ""
 }
 
 variable "fgt_config_2" {
-  type    = string
-  default = ""
-}
-
-variable "vm_image_ocid" {
-  default = "ocid1.image.oc1..aaaaaaaalj3fxkjxnru4i5725rl45iur3ducp5fy5dmulwzjtepathmtxbta"
+  description = "Fotigate 1 bootstrap config"
+  type        = string
+  default     = ""
 }
 
 variable "fgt_image_ids" {
-  type = map(string)
+  description = "Fortigate image IDs either BYOL or PAYG"
+  type        = map(string)
   default = {
     byol = "ocid1.image.oc1..aaaaaaaalj3fxkjxnru4i5725rl45iur3ducp5fy5dmulwzjtepathmtxbta"
     payg = "ocid1.image.oc1..aaaaaaaatwwtthsopj6iqfg762xpwnsmsnuzwhpwad7lw6slfjrao2f3bnha"
@@ -67,84 +74,101 @@ variable "fgt_image_ids" {
 }
 
 variable "instance_shape" {
-  default = "VM.Standard2.4"
+  description = "Oracle instance types"
+  type        = string
+  default     = "VM.Standard2.4"
   // default = "VM.Standard.E4.Flex"
 }
 
 variable "volume_size" {
-  default = "50" //GB
+  description = "Default secondary disk size"
+  default     = "50" //GB
 }
 
 variable "fgt_ni_0" {
-  type    = string
-  default = "public"
+  description = "Index 0 instace interface type of port"
+  type        = string
+  default     = "public"
 }
 variable "fgt_ni_1" {
-  type    = string
-  default = "private"
+  description = "Index 1 instace interface type of port"
+  type        = string
+  default     = "private"
 }
 variable "fgt_ni_2" {
-  type    = string
-  default = "mgmt"
+  description = "Index 2 instace interface type of port"
+  type        = string
+  default     = "mgmt"
 }
 variable "fgt_ni_3" {
-  type    = string
-  default = "ha"
+  description = "Index 3 instace interface type of port"
+  type        = string
+  default     = "ha"
 }
 
-// License Type to create FortiGate-VM
-// Provide the license type for FortiGate-VM Instances, either byol or payg.
 variable "license_type" {
-  type    = string
-  default = "payg"
+  description = "Provide the license type for FortiGate-VM Instances, either byol or payg"
+  type        = string
+  default     = "payg"
 }
 
 variable "fgt_subnet_ids" {
-  type    = map(string)
-  default = null
+  description = "Fortigate subnets IDs map"
+  type        = map(string)
+  default     = null
 }
 
 variable "fgt_vcn_id" {
-  type    = string
-  default = null
+  description = "Orace VCN where deploy Fortigate instances"
+  type        = string
+  default     = null
 }
 
 variable "fgt_1_ips" {
-  type    = map(string)
-  default = null
-}
-
-variable "fgt_2_vnic_ips" {
-  type    = map(string)
-  default = null
+  description = "Fortigate 1 map of IPs of each port"
+  type        = map(string)
+  default     = null
 }
 
 variable "fgt_1_vnic_ips" {
-  type    = map(string)
-  default = null
+  description = "Fortigate 1 instance map of IPs of each network interface"
+  type        = map(string)
+  default     = null
+}
+
+variable "fgt_2_vnic_ips" {
+  description = "Fortigate 2 instance map of IPs of each network interface"
+  type        = map(string)
+  default     = null
 }
 
 variable "fgt_2_ips" {
-  type    = map(string)
-  default = null
+  description = "Fortigate 2 map of IPs of each port"
+  type        = map(string)
+  default     = null
 }
 
 variable "public_ip_lifetime" {
-  type    = string
-  default = "RESERVED"
+  description = "Type of public IPs"
+  type        = string
+  default     = "RESERVED"
   //or EPHEMERAL
 }
 
 variable "fgt_nsg_ids" {
-  type    = map(string)
-  default = null
+  description = "Map of security groups to assign"
+  type        = map(string)
+  default     = null
 }
 
 variable "ocpus" {
-  type    = number
-  default = 4
+  description = "OCI instance number of CPUs, used if type of instance is flex"
+  type        = number
+  default     = 4
 }
+
 variable "memory_in_gbs" {
-  type    = number
-  default = 16
+  description = "OCI instance GBp of RAM memory, used if type of instance is flex"
+  type        = number
+  default     = 16
 }

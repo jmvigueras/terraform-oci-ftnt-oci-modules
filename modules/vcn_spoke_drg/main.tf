@@ -24,14 +24,14 @@ resource "oci_core_subnet" "subnet_vm" {
 }
 // Create Spoke VCN attachment
 resource "oci_core_drg_attachment" "drg_attach_vcn_spoke" {
-    drg_id             = var.drg_id
-    display_name       = "${var.prefix}-drg-attach-vcn-spoke-${var.sufix}"
-    drg_route_table_id = var.drg_rt_id
+  drg_id             = var.drg_id
+  display_name       = "${var.prefix}-drg-attach-vcn-spoke-${var.sufix}"
+  drg_route_table_id = var.drg_rt_id
 
-    network_details {
-        id   = oci_core_virtual_network.vcn.id
-        type = "VCN"
-    }
+  network_details {
+    id   = oci_core_virtual_network.vcn.id
+    type = "VCN"
+  }
 }
 #------------------------------------------------------------------------------------------------------------
 # Create Route Tables to DRG
@@ -91,7 +91,7 @@ resource "oci_core_security_list" "sl_vm" {
   compartment_id = var.compartment_ocid
   vcn_id         = oci_core_virtual_network.vcn.id
   display_name   = "${var.prefix}-sl-vm"
-  
+
   // Allow all traffic ingress
   ingress_security_rules {
     protocol = "all"
