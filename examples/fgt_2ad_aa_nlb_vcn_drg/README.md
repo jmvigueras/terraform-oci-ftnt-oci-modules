@@ -1,14 +1,12 @@
 # Forigate cluster deployment
 
-This deployment will create a Fortigate Cluster Active/Passive in two Availability Domains (AD1 and AD2) and with 3 ports (Management-HA, Public and Private). (It is possible to deploy sharing mangement port and HA sync port since version 7.0.2)
+This deployment will create a Fortigate Cluster Active/Passive in two Availability Domains (AD1 and AD2) and with 3 ports (Management-HA, Public and Private). OCI Network Load Balancer (NLB) will be deploy to stear traffic to FortiGate cluster from Dynamic Routing Gateway (DRG). 
 
 ## Deployment Overview
 
 - New VCN with necessary regional subnets: Management (MGMT), Public and Private.
-- New VCN spoke with one regional subnet for new test instance.
-- New Dynamic Routing Gateway (DRG)
 - Fortigate cluster: 2 instances with 3 interfaces in active-passive cluster FGCP.
-- HA failover is handeled by Fortigate SDN connector, which will update public IP asignations and necessary route tables
+- OCI NLB will stear traffic to the FortiGates cluster.
 
 ## Requirements
 * [Terraform](https://learn.hashicorp.com/terraform/getting-started/install.html) >= 1.0.0

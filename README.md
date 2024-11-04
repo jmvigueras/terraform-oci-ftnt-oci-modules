@@ -7,6 +7,7 @@ This is a collection of modules for OCI deployments. You can find an example of 
 - [module fgt_config](./modules/fgt-config)
 - [module fgt_ha](./modules/fgt-ha)
 - [module ldp](./modules/ldp)
+- [module nlb](./modules/nlb)
 - [module vcn_fgt](./modules/vcn_fgt) 
 - [module vcn_spoke_drg](./modules/vcn_spoke_drg)
 - [module vcn_spoke_peer](./modules/vcn_spoke_peer)

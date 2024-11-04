@@ -68,8 +68,12 @@ variable "fgt_image_ids" {
   description = "Fortigate image IDs either BYOL or PAYG"
   type        = map(string)
   default = {
-    byol = "ocid1.image.oc1..aaaaaaaalj3fxkjxnru4i5725rl45iur3ducp5fy5dmulwzjtepathmtxbta"
-    payg = "ocid1.image.oc1..aaaaaaaatwwtthsopj6iqfg762xpwnsmsnuzwhpwad7lw6slfjrao2f3bnha"
+    //byol = "ocid1.image.oc1..aaaaaaaaywpjxu5763zxcu5lgsvsgy47uaxig7h4q4nsv2qqrblwxgt4pbqa" // 7.2.9 x86
+    byol = "ocid1.image.oc1..aaaaaaaaqtn5zzxeq2umyspk72ge7byv4sdrmuyz2moera44ms2d3i66ge5a" // 7.4.4 x86
+    //byol = "ocid1.image.oc1..aaaaaaaayemuikjhe64ns25jxggllgu7qkkrkxd6y3b664fmz3j7ugj322pa" // 7.2.6 x86
+    //payg = "ocid1.image.oc1..aaaaaaaasaccoftifcf5i7db4wye5xcv24lxqfbrg2abbzczjovrkhfc54ba" // 7.2.9 x86
+    payg = "ocid1.image.oc1..aaaaaaaa5gjppe75polatsasipzuv3g5x7ectgrlybocfbojr4izqhpsxega" // 7.4.4 x86
+    //payg = "ocid1.image.oc1..aaaaaaaa3ipiyncshrtv5enxycafbh7qa6av7t57c4rdcuhchvfpjumm4wja" // 7.6.0 x86
   }
 }
 

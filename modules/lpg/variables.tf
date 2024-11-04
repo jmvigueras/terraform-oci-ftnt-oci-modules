@@ -17,18 +17,20 @@ variable "tags" {
   }
 }
 
-variable "fgt_vcn_id" {
+variable "vcn_id" {
   description = "Fortigate VCN ID"
   type        = string
+  default     = null
 }
 
-variable "fgt_subnet_ids" {
-  description = "Map of subnets IDss"
+variable "rt_attach_subnet_ids" {
+  description = "Map of subnets IDs"
   type        = map(string)
+  default     = {}
 }
 
-variable "fgt_vcn_rt_to_fgt_id" {
-  description = "Fortigate VCN Route Table ID to create a route to new LPG ID"
+variable "lpd_rt_id" {
+  description = "LPD route table association"
   type        = string
   default     = null
 }

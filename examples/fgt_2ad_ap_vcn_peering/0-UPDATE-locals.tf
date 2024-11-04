@@ -2,7 +2,7 @@
 locals {
   prefix = "demo-fgt-peered"
 
-  admin_cidr     = "${chomp(data.http.my-public-ip.response_body)}/32"
+  admin_cidr     = "0.0.0.0/0"
   admin_port     = "8443"
   fgt_vcn_cidr   = "172.20.0.0/24"
   spoke_vcn_cidr = "172.30.0.0/24"

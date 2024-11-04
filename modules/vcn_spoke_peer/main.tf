@@ -2,13 +2,13 @@
 resource "oci_core_virtual_network" "vcn" {
   cidr_block     = var.vcn_cidr
   compartment_id = var.compartment_ocid
-  display_name   = "${var.prefix}-spoke-vcn-${var.sufix}"
+  display_name   = "${var.prefix}-vcn-${var.sufix}"
   dns_label      = "spokevcn${var.sufix}"
 }
 // Crate IGW
 resource "oci_core_internet_gateway" "igw" {
   compartment_id = var.compartment_ocid
-  display_name   = "${var.prefix}-igw"
+  display_name   = "${var.prefix}-vcn-${var.sufix}-igw"
   vcn_id         = oci_core_virtual_network.vcn.id
 }
 // Create subnet Public
@@ -25,7 +25,7 @@ resource "oci_core_subnet" "subnet_vm" {
 // Create LPG peered to FGT LPG
 resource "oci_core_local_peering_gateway" "lpg" {
   compartment_id = var.compartment_ocid
-  display_name   = "${var.prefix}-spoke-to-fgt"
+  display_name   = "${var.prefix}-vcn-${var.sufix}-lpg"
   vcn_id         = oci_core_virtual_network.vcn.id
 
   peer_id = var.fgt_vcn_lpg_id

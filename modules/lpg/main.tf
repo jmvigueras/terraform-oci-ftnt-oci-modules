@@ -2,27 +2,29 @@
 # Create LPG FGT VCN
 #------------------------------------------------------------------------------------------------------------
 // Create Local Peering Gateway
-resource "oci_core_local_peering_gateway" "fgt_vcn_lpg" {
+resource "oci_core_local_peering_gateway" "lpd" {
   compartment_id = var.compartment_ocid
   display_name   = "${var.prefix}-fgt-lpg"
-  vcn_id         = var.fgt_vcn_id
+  vcn_id         = var.vcn_id
 
-  route_table_id = var.fgt_vcn_rt_to_fgt_id
+  route_table_id = var.lpd_rt_id
 }
-// Create Route Table Private in FGT VCN (private subnet)
-resource "oci_core_route_table" "fgt_rt_private" {
+// Create Route Table pointing to LPG
+resource "oci_core_route_table" "rt_to_lpd" {
   compartment_id = var.compartment_ocid
-  vcn_id         = var.fgt_vcn_id
-  display_name   = "${var.prefix}-rt-private-lpd"
+  vcn_id         = var.vcn_id
+  display_name   = "${var.prefix}-rt-to-lpd"
 
   route_rules {
     destination       = "0.0.0.0/0"
     destination_type  = "CIDR_BLOCK"
-    network_entity_id = oci_core_local_peering_gateway.fgt_vcn_lpg.id
+    network_entity_id = oci_core_local_peering_gateway.lpd.id
   }
 }
-// Assign Route Table to private subnet
-resource "oci_core_route_table_attachment" "fgt_rt_private_attachment" {
-  subnet_id      = var.fgt_subnet_ids["private"]
-  route_table_id = oci_core_route_table.fgt_rt_private.id
+// Assign Route Table to LPG to subnets
+resource "oci_core_route_table_attachment" "rt_to_lpd_attachs" {
+  for_each = { for i, v in var.rt_attach_subnet_ids : i => v }
+
+  subnet_id      = each.value
+  route_table_id = oci_core_route_table.rt_to_lpd.id
 }
