@@ -1,5 +1,9 @@
-output "fgt_config" {
-  value = data.template_file.fgt.rendered
+output "fgt_config_1" {
+  value = data.template_file.fgt_1.rendered
+}
+
+output "fgt_config_2" {
+  value = data.template_file.fgt_2.rendered
 }
 
 output "vpn_psk" {

@@ -7,7 +7,7 @@ locals {
   # FGT HUB locals
   #-----------------------------------------------------------------------------------------------------
   hub1_cluster_type = "fgsp"
-  hub2_cluster_type = "fgsp"
+  hub2_cluster_type = "fgcp"
 
   hub1 = [
     {
@@ -54,7 +54,7 @@ locals {
     vni       = "1100"
   }
 
-  admin_cidr = "0.0.0.0/0"
+  admin_cidr = "${chomp(data.http.my-public-ip.response_body)}/32"
 
   #-----------------------------------------------------------------------------------------------------
   # FGT Spoke locals
@@ -136,7 +136,7 @@ locals {
 }
 
 #-----------------------------------------------------------------------------------------------------
-# FGT necessary variables 
+# FGT active-passive necessary variables 
 #-----------------------------------------------------------------------------------------------------
 locals {
   fgt_subnet_cidrs = {
@@ -144,32 +144,14 @@ locals {
     public  = cidrsubnet(local.hub1[0]["cidr"], 4, 1)
     private = cidrsubnet(local.hub1[0]["cidr"], 4, 2)
   }
-  /*
-  fgt_ips = {
+  fgt_1_ips = {
     mgmt    = cidrhost(local.fgt_subnet_cidrs["mgmt"], 10)
     public  = cidrhost(local.fgt_subnet_cidrs["public"], 10)
     private = cidrhost(local.fgt_subnet_cidrs["private"], 10)
   }
-  */
-}
-
-#-----------------------------------------------------------------------------------------------------
-# FGT FGSP variables
-#-----------------------------------------------------------------------------------------------------
-locals {
-  subnet_cidr_host    = 10
-  fgsp_cluster_number = 3
-
-  fgsp_member_ips = { for i in range(0, local.fgsp_cluster_number) :
-    i => cidrhost(local.fgt_subnet_cidrs["private"], local.subnet_cidr_host + i)
+  fgt_2_ips = {
+    mgmt    = cidrhost(local.fgt_subnet_cidrs["mgmt"], 10)
+    public  = cidrhost(local.fgt_subnet_cidrs["public"], 10)
+    private = cidrhost(local.fgt_subnet_cidrs["private"], 10)
   }
-
-  fgt_ips = { for i in range(0, local.fgsp_cluster_number) : i => {
-    "mgmt"    = cidrhost(local.fgt_subnet_cidrs["mgmt"], local.subnet_cidr_host + i),
-    "public"  = cidrhost(local.fgt_subnet_cidrs["public"], local.subnet_cidr_host + i),
-    "private" = cidrhost(local.fgt_subnet_cidrs["private"], local.subnet_cidr_host + i)
-    }
-  }
-
 }
-

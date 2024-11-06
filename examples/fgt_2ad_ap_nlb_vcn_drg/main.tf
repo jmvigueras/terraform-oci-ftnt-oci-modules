@@ -15,7 +15,7 @@ module "fgt_vcn" {
 }
 // Create FGT config
 module "fgt_config" {
-  source           = "../../modules/fgt_config"
+  source           = "../../modules/fgt_ha_config"
   tenancy_ocid     = var.tenancy_ocid
   compartment_ocid = var.compartment_ocid
 

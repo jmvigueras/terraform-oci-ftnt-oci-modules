@@ -1,30 +1,13 @@
 #-----------------------------------------------------------------------------------
-# Predefined variables for cluster
-# - FGSP and AutoScale
+# Predefined variables for HA
+# - config_fgcp   = false (default)
+# - confgi_fgsp   = false (default)
 #-----------------------------------------------------------------------------------
-variable "config_fgsp" {
+variable "config_fgcp" {
   type    = bool
   default = false
 }
-variable "fgsp_member_id" {
-  type    = string
-  default = "0"
-}
-variable "fgsp_member_ips" {
-  type    = map(string)
-  default = {}
-}
-variable "fgsp_port" {
-  type    = string
-  default = "private"
-}
-variable "auto_scale_secret" {
-  description = "Fortigate auto scale password"
-  type        = string
-  default     = "nh62znfkzajz2o9"
-}
-variable "config_auto_scale" {
-  description = "Configure auto-scale"
+variable "config_fgsp" {
   type    = bool
   default = false
 }
@@ -149,7 +132,11 @@ variable "fmg_interface_select_method" {
   type    = string
   default = ""
 }
-variable "fmg_source_ip_fgt" {
+variable "fmg_source_ip_fgt_1" {
+  type    = string
+  default = ""
+}
+variable "fmg_source_ip_fgt_2" {
   type    = string
   default = ""
 }
@@ -173,7 +160,11 @@ variable "faz_interface_select_method" {
   type    = string
   default = ""
 }
-variable "faz_source_ip_fgt" {
+variable "faz_source_ip_fgt_1" {
+  type    = string
+  default = ""
+}
+variable "faz_source_ip_fgt_2" {
   type    = string
   default = ""
 }
@@ -189,14 +180,6 @@ variable "compartment_ocid" {
   default = ""
 }
 #-----------------------------------------------------------------------------------
-# FGT variables
-#-----------------------------------------------------------------------------------
-variable "fgt_id" {
-  description = "FortiGate description"
-  type    = string
-  default = "fgt1"
-}
-#-----------------------------------------------------------------------------------
 variable "admin_cidr" {
   type    = string
   default = "0.0.0.0/0"
@@ -209,7 +192,15 @@ variable "api_key" {
   type    = string
   default = null
 }
-variable "config_extra_fgt" {
+variable "fgt_passive" {
+  type    = bool
+  default = false
+}
+variable "config_extra_fgt_1" {
+  type    = string
+  default = ""
+}
+variable "config_extra_fgt_2" {
   type    = string
   default = ""
 }
@@ -217,7 +208,11 @@ variable "vcn_spoke_cidrs" {
   type    = list(string)
   default = null
 }
-variable "fgt_ips" {
+variable "fgt_1_ips" {
+  type    = map(string)
+  default = null
+}
+variable "fgt_2_ips" {
   type    = map(string)
   default = null
 }
@@ -228,35 +223,57 @@ variable "fgt_subnet_cidrs" {
 variable "ports" {
   type = map(string)
   default = {
-    public  = "port1"
-    private = "port2"
+    mgmt    = "port1"
+    public  = "port2"
+    private = "port3"
+    ha_port = "port1"
   }
 }
 variable "public_port" {
   type    = string
-  default = "port1"
+  default = "port2"
 }
 variable "private_port" {
   type    = string
-  default = "port2"
+  default = "port3"
 }
+variable "mgmt_port" {
+  type    = string
+  default = "port1"
+}
+variable "ha_port" {
+  type    = string
+  default = "port1"
+}
+// License Type to create FortiGate-VM
+// Provide the license type for FortiGate-VM Instances, either byol or payg.
 variable "license_type" {
-  description = "Provide the license type for FortiGate-VM Instances, either byol or payg."
   type    = string
   default = "payg"
 }
-variable "license_file" {
-  description = "Route to your byol license file, license.lic"
+// license file for the active fgt
+variable "license_file_1" {
+  // Change to your own byol license file, license.lic
   type    = string
-  default = "./licenses/license.lic"
+  default = "./licenses/license1.lic"
 }
-variable "fortiflex_token" {
-  description = "FortiFlex token"
+// license file for the passive fgt
+variable "license_file_2" {
+  // Change to your own byol license file, license2.lic
+  type    = string
+  default = "./licenses/license2.lic"
+}
+// FortiFlex tokens
+variable "fortiflex_token_1" {
   type    = string
   default = ""
 }
+variable "fortiflex_token_2" {
+  type    = string
+  default = ""
+}
+// SSH RSA public key for KeyPair if not exists
 variable "rsa_public_key" {
-  description = "SSH RSA public key for KeyPair"
   type    = string
   default = null
 }

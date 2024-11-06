@@ -1,6 +1,6 @@
 
-output "fgt_config" {
-  value = { for k, v in module.fgt_config : k => v }
+output "fgt-config_hub1_1" {
+  value = module.fgt-config_hub1.fgt_config_1
 }
 /*
 

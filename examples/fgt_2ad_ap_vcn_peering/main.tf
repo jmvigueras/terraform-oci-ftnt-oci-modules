@@ -12,7 +12,7 @@ module "fgt_vcn" {
 }
 // Create FGT config
 module "fgt_config" {
-  source           = "../../modules/fgt_config"
+  source           = "../../modules/fgt_ha_config"
   tenancy_ocid     = var.tenancy_ocid
   compartment_ocid = var.compartment_ocid
 
@@ -60,9 +60,9 @@ module "fgt_lpg" {
   compartment_ocid = var.compartment_ocid
   prefix           = local.prefix
 
-  fgt_vcn_id           = module.fgt_vcn.fgt_vcn_id
-  fgt_subnet_ids       = module.fgt_vcn.fgt_subnet_ids
-  fgt_vcn_rt_to_fgt_id = module.fgt.fgt_vcn_rt_to_fgt_id
+  vcn_id               = module.fgt_vcn.fgt_vcn_id
+  rt_attach_subnet_ids = { "private" = module.fgt_vcn.fgt_subnet_ids["private"] }
+  lpd_rt_id            = module.fgt.fgt_vcn_rt_to_fgt_id
 }
 // Create spoke VCN and attached to DRG
 module "spoke_vcn" {
@@ -73,7 +73,7 @@ module "spoke_vcn" {
 
   admin_cidr     = local.admin_cidr
   vcn_cidr       = local.spoke_vcn_cidr
-  fgt_vcn_lpg_id = module.fgt_lpg.fgt_vcn_lpg_id
+  fgt_vcn_lpg_id = module.fgt_lpg.lpd_id
 }
 // Create new test instance
 module "spoke_vm" {

@@ -1,24 +1,3 @@
-module "fgt_config" {
-  source = "../"
-
-  for_each = local.fgt_ips
-
-  admin_cidr     = local.admin_cidr
-  admin_port     = var.admin_port
-  rsa_public_key = tls_private_key.ssh.public_key_openssh
-  api_key        = random_string.api_key.result
-
-  config_fgsp       = true
-  config_auto_scale = true
-
-  fgt_subnet_cidrs = local.fgt_subnet_cidrs
-  fgt_ips          = each.value
-
-  fgsp_member_id  = each.key
-  fgsp_member_ips = local.fgsp_member_ips
-}
-
-/*
 #---------------------------------------------------------------------------------
 # Create FGT cluster HUB1
 # - FGSP
@@ -34,8 +13,10 @@ module "fgt-config_hub1" {
   api_key        = random_string.api_key.result
 
   fgt_subnet_cidrs = local.fgt_subnet_cidrs
-  fgt_ips          = local.fgt_ips
+  fgt_1_ips        = local.fgt_1_ips
+  fgt_2_ips        = local.fgt_2_ips
 
+  config_fgcp    = local.hub1_cluster_type == "fgcp" ? true : false
   config_fgsp    = local.hub1_cluster_type == "fgsp" ? true : false
   config_hub     = true
   config_vxlan   = true
@@ -56,8 +37,10 @@ module "fgt-config_hub2" {
   api_key        = random_string.api_key.result
 
   fgt_subnet_cidrs = local.fgt_subnet_cidrs
-  fgt_ips          = local.fgt_ips
+  fgt_1_ips        = local.fgt_1_ips
+  fgt_2_ips        = local.fgt_2_ips
 
+  config_fgcp    = local.hub2_cluster_type == "fgcp" ? true : false
   config_fgsp    = local.hub2_cluster_type == "fgsp" ? true : false
   config_hub     = true
   config_vxlan   = true
@@ -77,7 +60,8 @@ module "fgt-config_spoke" {
   api_key        = random_string.api_key.result
 
   fgt_subnet_cidrs = local.fgt_subnet_cidrs
-  fgt_ips          = local.fgt_ips
+  fgt_1_ips        = local.fgt_1_ips
+  fgt_2_ips        = local.fgt_2_ips
 
   config_fgsp  = true
   config_spoke = true
@@ -85,9 +69,25 @@ module "fgt-config_spoke" {
   hubs  = local.hubs
   spoke = local.spoke
 }
-*/
 
+#---------------------------------------------------------------------------------
+# Create FGT onramp
+# - FGCP
+#---------------------------------------------------------------------------------
+module "fgt-config_onramp" {
+  source = "../"
 
+  admin_cidr     = local.admin_cidr
+  admin_port     = var.admin_port
+  rsa_public_key = tls_private_key.ssh.public_key_openssh
+  api_key        = random_string.api_key.result
+
+  fgt_subnet_cidrs = local.fgt_subnet_cidrs
+  fgt_1_ips        = local.fgt_1_ips
+  fgt_2_ips        = local.fgt_2_ips
+
+  config_fgcp = true
+}
 
 
 

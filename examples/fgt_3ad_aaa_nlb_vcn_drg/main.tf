@@ -13,48 +13,50 @@ module "fgt_vcn" {
 
   vcn_cidr = local.vcn_cidr
 }
-// Create FGT config
+// Create FGTs config
 module "fgt_config" {
-  source           = "../../modules/fgt_config"
-  tenancy_ocid     = var.tenancy_ocid
-  compartment_ocid = var.compartment_ocid
+  source = "../../modules/fgt_config"
+
+  for_each = local.fgt_ips
 
   admin_cidr     = local.admin_cidr
   admin_port     = local.admin_port
   rsa_public_key = trimspace(tls_private_key.ssh.public_key_openssh)
   api_key        = random_string.api_key.result
 
-  license_type = local.license_type
+  config_fgsp       = true
+  config_auto_scale = true
 
-  config_fgsp = local.config_fgsp
+  fgt_subnet_cidrs = local.fgt_subnet_cidrs
+  fgt_ips          = each.value
 
-  fgt_subnet_cidrs = module.fgt_vcn.fgt_subnet_cidrs
-  fgt_1_ips        = module.fgt_vcn.fgt_1_vnic_ips //use fgt_1_ips for HA with SDN connector of NLB with floating IP as backend
-  fgt_2_ips        = module.fgt_vcn.fgt_2_vnic_ips //use fgt_2_vcn_ips for NLB with two fortigates as backend
+  fgt_id          = "fgt-${each.key + 1}"
+  fgsp_member_id  = each.key
+  fgsp_member_ips = local.fgsp_member_ips
 
   vcn_spoke_cidrs = local.spokes_cidrs
 }
 // Create FGT instances
 module "fgt" {
-  source           = "../../modules/fgt_ha"
+  source = "../../modules/fgt"
+
+  for_each = local.fgt_ips
+
   compartment_ocid = var.compartment_ocid
 
-  region = var.region
-  region_ad_1 = "1"
-  region_ad_2 = "1"
+  region    = var.region
+  region_ad = each.key + 1
 
   prefix = local.prefix
+  suffix = each.key + 1
 
-  fgt_config_1 = module.fgt_config.fgt_config_1
-  fgt_config_2 = module.fgt_config.fgt_config_2
+  fgt_config = module.fgt_config[each.key].fgt_config
 
   fgt_vcn_id     = module.fgt_vcn.fgt_vcn_id
   fgt_subnet_ids = module.fgt_vcn.fgt_subnet_ids
   fgt_nsg_ids    = module.fgt_vcn.fgt_nsg_ids
-  fgt_1_ips      = module.fgt_vcn.fgt_1_ips
-  fgt_2_ips      = module.fgt_vcn.fgt_2_ips
-  fgt_1_vnic_ips = module.fgt_vcn.fgt_1_vnic_ips
-  fgt_2_vnic_ips = module.fgt_vcn.fgt_2_vnic_ips
+
+  fgt_vnic_ips = each.value
 }
 // Create Internal NLB
 module "nlb" {
@@ -68,10 +70,7 @@ module "nlb" {
   nsg_ids   = [module.fgt_vcn.fgt_nsg_ids["private"]]
 
   load_balance_policy = "TWO_TUPLE"
-  backend_ips = {
-    "fgt1" = module.fgt_vcn.fgt_1_vnic_ips["private"]
-    "fgt2" = module.fgt_vcn.fgt_2_vnic_ips["private"]
-  }
+  backend_ips         = { for k, v in local.fgt_ips : "fgt${k + 1}" => v["private"] }
 }
 // Create Route Table to point default to NLB
 resource "oci_core_route_table" "rt_to_nlb" {
@@ -124,7 +123,7 @@ module "spoke_vms" {
 
   compartment_ocid = var.compartment_ocid
   prefix           = "${local.prefix}-spoke${each.key + 1}"
-  
+
   region_ad       = "1"
   subnet_id       = module.spoke_vcns[each.key].subnet_ids["vm"]
   authorized_keys = local.authorized_keys
